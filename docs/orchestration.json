@@ -1,0 +1,38 @@
+{
+  "project": "proofdock",
+  "principles": [
+    "local-first",
+    "deterministic",
+    "explicit-config",
+    "no-telemetry",
+    "portable-json-and-markdown"
+  ],
+  "lanes": [
+    {
+      "id": "cli-surface",
+      "title": "CLI skeleton + command surface",
+      "deliverables": ["init", "collect", "render", "summary", "structured errors"]
+    },
+    {
+      "id": "engine",
+      "title": "Core engine + fixtures",
+      "deliverables": ["config loading", "artifact validation", "git metadata", "allowlisted commands"]
+    },
+    {
+      "id": "reports",
+      "title": "Reports + docs",
+      "deliverables": ["proof.json", "summary.md", "index.html", "pr-comment.md", "README examples"]
+    },
+    {
+      "id": "safety",
+      "title": "Safety + validation",
+      "deliverables": ["redaction", "missing-artifact refusal", "tests", "smoke", "validate.sh"]
+    }
+  ],
+  "validation": [
+    "npm run check",
+    "npm test",
+    "npm run build",
+    "bash scripts/validate.sh"
+  ]
+}

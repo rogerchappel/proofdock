@@ -3,16 +3,22 @@
   "version": "0.1.0",
   "description": "Static proof bundle generator for agent-produced commits, checks, screenshots, and notes.",
   "type": "module",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
+  "bin": {
+    "proofdock": "./dist/cli.js"
+  },
   "exports": {
-    ".": "./src/index.js"
+    ".": "./dist/index.js"
   },
   "files": [
-    "src",
+    "dist",
     "README.md"
   ],
   "scripts": {
-    "test": "node --test"
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test",
+    "smoke": "npm run build && node scripts/smoke.mjs"
   },
   "keywords": [
     "agents",
@@ -22,5 +28,9 @@
     "cli"
   ],
   "author": "StackForge User",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "typescript": "^5.9.3"
+  }
 }

@@ -1,67 +1,117 @@
 # proofdock
 
-proofdock turns scattered agent evidence into a portable local mini-site and JSON bundle for review.
+proofdock assembles a local proof-of-work bundle for agent or developer changes. It collects explicit artifacts, runs allowlisted checks, and emits portable review outputs: JSON, Markdown, HTML, and a PR-comment snippet.
 
-## Status
+## What ships in this MVP
 
-This repository is an early StackForge scaffold. The public contract is the PRD-driven V1 described in `docs/PRD.md`; implementation should stay local-first, deterministic, and reviewable.
+- `proofdock init` to create a starter config
+- `proofdock collect` to validate artifacts and build a bundle
+- `proofdock render` to regenerate HTML/Markdown from `proof.json`
+- `proofdock summary` to print Markdown or JSON for handoff workflows
+- Secret redaction for obvious token patterns before bundle output is written
 
-## What it will do
-
-- Collect explicitly declared evidence paths and command outputs.
-- Render proofdock/index.html and proofdock/proof.json.
-- Organize commits, checks, changed files, screenshots, logs, risks, and next steps.
-- Redact obvious token patterns before writing bundles.
-
-## Install
-
-```sh
-npm install proofdock
-```
-
-For local development from this repository:
+## 60-second demo
 
 ```sh
 npm install
-npm test
+npm run build
+
+node dist/cli.js init
+# edit proofdock.config.json to point at your evidence files
+node dist/cli.js collect --config proofdock.config.json
+open proofdock/index.html
 ```
 
-## CLI sketch
+Generated bundle contents:
 
-```sh
-proofdock init
-proofdock collect --config proofdock.config.json
-proofdock render --out ./proofdock
-proofdock summary --format markdown
+- `proofdock/proof.json`
+- `proofdock/summary.md`
+- `proofdock/index.html`
+- `proofdock/pr-comment.md`
+- `proofdock/artifacts/...`
+
+## Config example
+
+```json
+{
+  "version": 1,
+  "summary": {
+    "title": "Proof bundle for retry fix",
+    "overview": "Shows the patch, checks, and handoff notes for review."
+  },
+  "artifacts": [
+    { "path": "notes/handoff.md", "title": "Agent handoff", "type": "note" },
+    { "path": "artifacts/test.log", "title": "Test log", "type": "log" }
+  ],
+  "globs": [
+    { "pattern": "artifacts/screenshots/*", "type": "screenshot", "titlePrefix": "Screenshot" }
+  ],
+  "commands": [
+    { "id": "git-status", "title": "Git status", "command": ["git", "status", "--short"] },
+    { "id": "unit", "title": "Unit tests", "command": ["npm", "test"], "allowFailure": true }
+  ],
+  "reviewer": {
+    "risks": ["UI change still needs a visual pass."],
+    "nextSteps": ["Attach summary.md to the agent handoff."]
+  },
+  "redact": true
+}
 ```
 
-These commands describe the intended V1 interface from the PRD. Keep implementation changes aligned with `docs/TASKS.md` and update this section as behavior lands.
-
-## Local-first safety
-
-- No hidden network calls in core flows.
-- No credential exfiltration or secret value printing.
-- No destructive filesystem or Git operations without explicit user intent.
-- Prefer deterministic JSON/Markdown output that agents and humans can review.
-
-## Verify
-
-Run the local validation script before opening a pull request:
+## CLI reference
 
 ```sh
+proofdock init [--config proofdock.config.json] [--force]
+proofdock collect --config proofdock.config.json [--out proofdock]
+proofdock render --input proofdock/proof.json [--out proofdock]
+proofdock summary --input proofdock/proof.json [--format markdown|json]
+```
+
+## Safety model
+
+- Local-first only; no network calls in the core flow
+- Explicit config for commands and artifacts
+- Rejects artifact paths that escape the repo root
+- Fails fast when a referenced artifact is missing
+- Redacts obvious token and private-key patterns in text outputs
+
+## Agent handoff example
+
+A practical sprint flow:
+
+1. Agent writes `notes/handoff.md`
+2. Checks write logs into `artifacts/`
+3. Screenshots land in `artifacts/screenshots/`
+4. `proofdock collect --config proofdock.config.json`
+5. Reviewer opens `proofdock/index.html` or reads `proofdock/summary.md`
+6. `proofdock/pr-comment.md` gets pasted into the PR or handoff thread
+
+This fits well beside tools like `branchbrief`, `prpack`, and local review bundles.
+
+## Non-goals
+
+- No hosted service
+- No telemetry
+- No automatic PR posting or cloud upload
+- No CI replacement
+
+## Development
+
+```sh
+npm install
+npm run check
 npm test
+npm run build
+npm run smoke
 bash scripts/validate.sh
 ```
-
-`scripts/validate.sh` checks required repo files and runs package scripts that exist. Missing optional `agent-qc` is treated as a skip, not a failure.
 
 ## Documentation
 
 - [Product requirements](docs/PRD.md)
 - [Task breakdown](docs/TASKS.md)
 - [Orchestration plan](docs/ORCHESTRATION.md)
-- [Contributing guide](CONTRIBUTING.md)
-- [Security policy](SECURITY.md)
+- [Machine-readable orchestration](docs/orchestration.json)
 
 ## License
 
