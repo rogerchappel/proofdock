@@ -12,13 +12,16 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "test": "npm run build && node --test",
-    "smoke": "npm run build && node scripts/smoke.mjs"
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "package:smoke": "npm run build && node scripts/package-smoke.mjs",
+    "release:check": "npm run check && npm test && npm run smoke && npm run package:smoke && npm pack --dry-run"
   },
   "keywords": [
     "agents",
@@ -32,5 +35,18 @@
   "devDependencies": {
     "@types/node": "^24.9.1",
     "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/proofdock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/proofdock/issues"
+  },
+  "homepage": "https://github.com/rogerchappel/proofdock#readme",
+  "packageManager": "npm@11.11.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }
