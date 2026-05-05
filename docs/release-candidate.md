@@ -1,20 +1,33 @@
 # Release candidate readiness
 
-Generated: 2026-05-05T21:24:26Z
+Generated: 2026-05-05T21:27:24Z
 Branch: `release-candidate/readiness`
-Base: `origin/main`
+Base: `main`
 
 ## Verification
 
-Status: BLOCKED - one or more local readiness checks failed
+Status: PASS
 
 Checks run:
+- `npm ci`
 - `npm run release:check`
 - `bash scripts/validate.sh`
 - `node releasebox check .`
 
 ## Check output summary
 
+    ## npm ci
+    ```
+    npm ci
+    ```
+    ```text
+    
+    added 3 packages, and audited 4 packages in 487ms
+    
+    found 0 vulnerabilities
+    ```
+    RESULT: 0 (0s)
+    
     ## npm run release:check
     ```
     npm run release:check
@@ -28,11 +41,84 @@ Checks run:
     > proofdock@0.1.0 check
     > tsc -p tsconfig.json --noEmit
     
-    error TS2688: Cannot find type definition file for 'node'.
-      The file is in the program because:
-        Entry point of type library 'node' specified in compilerOptions
+    
+    > proofdock@0.1.0 test
+    > npm run build && node --test
+    
+    
+    > proofdock@0.1.0 build
+    > tsc -p tsconfig.json
+    
+    ✔ cli summary emits markdown (375.057208ms)
+    ✔ collectProof creates JSON, markdown, html, and redacted previews (241.225583ms)
+    ✔ collectProof rejects missing artifacts (165.398375ms)
+    ✔ test/helpers.mjs (59.699875ms)
+    ✔ redacts common secret patterns (0.767167ms)
+    ℹ tests 5
+    ℹ suites 0
+    ℹ pass 5
+    ℹ fail 0
+    ℹ cancelled 0
+    ℹ skipped 0
+    ℹ todo 0
+    ℹ duration_ms 489.81325
+    
+    > proofdock@0.1.0 smoke
+    > npm run build && node scripts/smoke.mjs
+    
+    
+    > proofdock@0.1.0 build
+    > tsc -p tsconfig.json
+    
+    smoke ok
+    
+    > proofdock@0.1.0 package:smoke
+    > npm run build && node scripts/package-smoke.mjs
+    
+    
+    > proofdock@0.1.0 build
+    > tsc -p tsconfig.json
+    
+    package smoke ok: proofdock-0.1.0.tgz
+    npm notice
+    npm notice package: proofdock@0.1.0
+    npm notice Tarball Contents
+    npm notice 1.1kB LICENSE
+    npm notice 3.3kB README.md
+    npm notice 31B dist/cli.d.ts
+    npm notice 4.8kB dist/cli.js
+    npm notice 208B dist/collect.d.ts
+    npm notice 5.9kB dist/collect.js
+    npm notice 280B dist/config.d.ts
+    npm notice 2.6kB dist/config.js
+    npm notice 180B dist/errors.d.ts
+    npm notice 237B dist/errors.js
+    npm notice 405B dist/fs-utils.d.ts
+    npm notice 1.7kB dist/fs-utils.js
+    npm notice 254B dist/git.d.ts
+    npm notice 1.3kB dist/git.js
+    npm notice 298B dist/index.d.ts
+    npm notice 265B dist/index.js
+    npm notice 59B dist/redact.d.ts
+    npm notice 784B dist/redact.js
+    npm notice 246B dist/render.d.ts
+    npm notice 3.6kB dist/render.js
+    npm notice 1.9kB dist/types.d.ts
+    npm notice 11B dist/types.js
+    npm notice 1.3kB package.json
+    npm notice Tarball Details
+    npm notice name: proofdock
+    npm notice version: 0.1.0
+    npm notice filename: proofdock-0.1.0.tgz
+    npm notice package size: 9.6 kB
+    npm notice unpacked size: 30.7 kB
+    npm notice shasum: a1b7a60d74390896a4596febb7a1fd1998402aaf
+    npm notice integrity: sha512-Vg2AjEPWHseXA[...]oGGhP1IZjzgCg==
+    npm notice total files: 23
+    npm notice
+    proofdock-0.1.0.tgz
     ```
-    RESULT: 2 (0s)
+    RESULT: 0 (6s)
     
     ## bash scripts/validate.sh
     ```
@@ -58,10 +144,7 @@ Checks run:
     > proofdock@0.1.0 check
     > tsc -p tsconfig.json --noEmit
     
-    error TS2688: Cannot find type definition file for 'node'.
-      The file is in the program because:
-        Entry point of type library 'node' specified in compilerOptions
-    FAIL: package script: check
+    PASS: package script: check
     
     > proofdock@0.1.0 test
     > npm run build && node --test
@@ -70,23 +153,30 @@ Checks run:
     > proofdock@0.1.0 build
     > tsc -p tsconfig.json
     
-    error TS2688: Cannot find type definition file for 'node'.
-      The file is in the program because:
-        Entry point of type library 'node' specified in compilerOptions
-    FAIL: package script: test
+    ✔ cli summary emits markdown (419.624125ms)
+    ✔ collectProof creates JSON, markdown, html, and redacted previews (242.077875ms)
+    ✔ collectProof rejects missing artifacts (222.513334ms)
+    ✔ test/helpers.mjs (81.9605ms)
+    ✔ redacts common secret patterns (0.785333ms)
+    ℹ tests 5
+    ℹ suites 0
+    ℹ pass 5
+    ℹ fail 0
+    ℹ cancelled 0
+    ℹ skipped 0
+    ℹ todo 0
+    ℹ duration_ms 564.999584
+    PASS: package script: test
     
     > proofdock@0.1.0 build
     > tsc -p tsconfig.json
     
-    error TS2688: Cannot find type definition file for 'node'.
-      The file is in the program because:
-        Entry point of type library 'node' specified in compilerOptions
-    FAIL: package script: build
+    PASS: package script: build
     NOTE: agent-qc not installed; skipping optional agent check
     
-    Validation failed.
+    Validation passed.
     ```
-    RESULT: 1 (1s)
+    RESULT: 0 (3s)
     
     ## ReleaseBox check
     ```
