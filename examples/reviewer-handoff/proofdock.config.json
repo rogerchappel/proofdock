@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "summary": {
+    "title": "Reviewer handoff proof bundle",
+    "overview": "Collects a handoff note, a test log, git status, and a file list for a local review bundle."
+  },
+  "artifacts": [
+    { "path": "notes/handoff.md", "title": "Agent handoff", "type": "note" },
+    { "path": "artifacts/test.log", "title": "Test log", "type": "log" }
+  ],
+  "commands": [
+    { "id": "git-status", "title": "Git status", "command": ["git", "status", "--short"] },
+    { "id": "tracked-files", "title": "Tracked files", "command": ["git", "ls-files"] }
+  ],
+  "reviewer": {
+    "risks": ["Example bundle only; replace sample notes and logs with real review evidence."],
+    "nextSteps": ["Open proofdock/index.html or attach proofdock/summary.md to the review handoff."]
+  },
+  "redact": true
+}
+

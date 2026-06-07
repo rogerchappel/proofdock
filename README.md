@@ -88,6 +88,11 @@ A practical sprint flow:
 
 This fits well beside tools like `branchbrief`, `prpack`, and local review bundles.
 
+## Demo Recipes
+
+- [Reviewer Handoff Bundle](docs/tutorials/reviewer-handoff-bundle.md) uses checked-in sample artifacts to generate JSON, Markdown, HTML, and PR-comment outputs.
+- [Video brief](docs/promo/video-brief.md) outlines a grounded walkthrough for promotion or screencast prep.
+
 ## Non-goals
 
 - No hosted service
