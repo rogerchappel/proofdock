@@ -91,6 +91,7 @@ This fits well beside tools like `branchbrief`, `prpack`, and local review bundl
 ## Demo Recipes
 
 - [Reviewer Handoff Bundle](docs/tutorials/reviewer-handoff-bundle.md) uses checked-in sample artifacts to generate JSON, Markdown, HTML, and PR-comment outputs.
+- `bash demo/reviewer-handoff-bundle.sh` runs that reviewer handoff flow and checks the generated bundle files.
 - [Video brief](docs/promo/video-brief.md) outlines a grounded walkthrough for promotion or screencast prep.
 
 ## Non-goals
