@@ -7,6 +7,7 @@
 - Outputs include JSON, Markdown, HTML, and a PR-comment snippet.
 - The core flow is local-first and does not post to GitHub or upload artifacts.
 - Text previews and command output can redact obvious token and private-key patterns.
+- The `examples/redacted-review` fixture uses fake token-shaped data for a safe redaction walkthrough.
 
 ## 90-Second Flow
 
@@ -26,9 +27,21 @@
    node dist/cli.js summary --input /tmp/proofdock-reviewer-handoff/proof.json --format json
    ```
 
+## Redaction Cutaway
+
+1. Show `examples/redacted-review/artifacts/agent.log` and call out that the token-shaped strings are fake fixture data.
+2. Run:
+
+   ```bash
+   bash demo/redacted-review-bundle.sh
+   ```
+
+3. Open `/tmp/proofdock-redacted-review/index.html` and point to `[REDACTED]` in the artifact preview and command output.
+4. Mention that the raw copied artifact remains local in the bundle, so teams still need normal secret-handling discipline.
+
 ## Avoid Claiming
 
 - Do not claim ProofDock verifies correctness of the change.
 - Do not claim automatic PR posting.
 - Do not claim secret redaction catches every possible secret format.
-
+- Do not use the fake fixture values as real credentials or present them as leaked production data.
