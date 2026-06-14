@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "summary": {
+    "title": "Redacted review bundle",
+    "overview": "Shows how ProofDock keeps reviewer previews useful while redacting obvious token-shaped values."
+  },
+  "artifacts": [
+    { "path": "notes/handoff.md", "title": "Review note", "type": "note" },
+    { "path": "artifacts/agent.log", "title": "Agent run log", "type": "log" }
+  ],
+  "commands": [
+    {
+      "id": "token-shaped-output",
+      "title": "Command output redaction",
+      "command": ["node", "-e", "console.log('Authorization: Bearer sk-demo12345678901234567890')"]
+    },
+    { "id": "git-status", "title": "Git status", "command": ["git", "status", "--short"] }
+  ],
+  "reviewer": {
+    "risks": [
+      "The checked-in fixture contains fake secrets for demo purposes only.",
+      "ProofDock redacts generated previews and command output; do not use demo fixtures as real credentials."
+    ],
+    "nextSteps": [
+      "Inspect summary.md or pr-comment.md for redacted evidence.",
+      "Replace the sample log and note with task-specific artifacts before sharing a real bundle."
+    ]
+  },
+  "redact": true
+}
