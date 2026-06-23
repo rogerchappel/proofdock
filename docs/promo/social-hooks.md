@@ -18,12 +18,15 @@ Short draft posts grounded in ProofDock's current CLI behavior.
 
 7. Need a lightweight promo clip? Run `bash demo/redacted-review-bundle.sh`, open `index.html`, and show `[REDACTED]` in the generated review evidence.
 
+8. Prefer a PR-comment-sized demo? `bash demo/summary-export-demo.sh` writes the same reviewer handoff as Markdown and JSON without uploading anything.
+
 ## Demo CTA
 
 ```sh
 npm install
 bash demo/reviewer-handoff-bundle.sh
 bash demo/redacted-review-bundle.sh
+bash demo/summary-export-demo.sh
 ```
 
 ## Limits to say plainly
