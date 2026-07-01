@@ -10,7 +10,7 @@ proofdock assembles a local proof-of-work bundle for agent or developer changes.
 - `proofdock summary` to print Markdown or JSON for handoff workflows
 - Secret redaction for obvious token patterns before bundle output is written
 
-## Quick Start
+## Quickstart
 
 ```sh
 npm install
