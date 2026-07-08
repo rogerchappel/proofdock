@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "summary": {
+    "title": "Release evidence bundle",
+    "overview": "Packages a release handoff note, a verification log, and local repository facts for review."
+  },
+  "artifacts": [
+    { "path": "notes/handoff.md", "title": "Release handoff", "type": "note" },
+    { "path": "artifacts/check.log", "title": "Verification log", "type": "log" }
+  ],
+  "commands": [
+    { "id": "git-status", "title": "Git status", "command": ["git", "status", "--short"] },
+    { "id": "package-json", "title": "Package metadata present", "command": ["node", "-e", "const p=require('../../package.json'); console.log(p.name, p.version)"] }
+  ],
+  "reviewer": {
+    "risks": ["Fixture evidence only; replace with real logs before release review."],
+    "nextSteps": ["Attach pr-comment.md to the PR and keep proof.json as the durable evidence record."]
+  },
+  "redact": true
+}

@@ -10,7 +10,7 @@ proofdock assembles a local proof-of-work bundle for agent or developer changes.
 - `proofdock summary` to print Markdown or JSON for handoff workflows
 - Secret redaction for obvious token patterns before bundle output is written
 
-## 60-second demo
+## Quickstart
 
 ```sh
 npm install
@@ -29,6 +29,15 @@ Generated bundle contents:
 - `proofdock/index.html`
 - `proofdock/pr-comment.md`
 - `proofdock/artifacts/...`
+
+After the package is installed or linked, the same flow is available through
+the published bin:
+
+```sh
+proofdock init
+proofdock collect --config proofdock.config.json
+proofdock summary --input proofdock/proof.json --format markdown
+```
 
 ## Config example
 
@@ -98,6 +107,10 @@ This fits well beside tools like `branchbrief`, `prpack`, and local review bundl
 - `bash demo/summary-export-demo.sh` verifies both summary export formats for the fixture bundle.
 - [PR comment summary demo](docs/tutorials/pr-comment-summary-demo.md) shows how to derive a smaller Markdown handoff from an existing bundle.
 - [Demo runbook](docs/promo/demo-runbook.md) gives a promotion-safe sequence for reviewer handoff, redaction, and summary export clips.
+- [PR Comment Export Demo](docs/tutorials/pr-comment-export.md) focuses on the copyable `pr-comment.md` handoff.
+- `bash demo/pr-comment-export-demo.sh` verifies the generated PR comment snippet from the reviewer handoff fixture.
+- [Release Evidence Bundle](docs/tutorials/release-evidence-bundle.md) packages a release handoff note and verification log into review outputs.
+- `bash demo/release-evidence-bundle.sh` verifies the release evidence fixture and generated PR comment.
 - [Video brief](docs/promo/video-brief.md) outlines a grounded walkthrough for promotion or screencast prep.
 
 ## Non-goals
