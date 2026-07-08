@@ -96,6 +96,8 @@ This fits well beside tools like `branchbrief`, `prpack`, and local review bundl
 - `bash demo/redacted-review-bundle.sh` verifies generated previews and command output contain `[REDACTED]`.
 - [Summary Export for PR Review](docs/tutorials/summary-export-for-pr-review.md) produces Markdown and JSON summaries from the reviewer handoff bundle.
 - `bash demo/summary-export-demo.sh` verifies both summary export formats for the fixture bundle.
+- [PR comment summary demo](docs/tutorials/pr-comment-summary-demo.md) shows how to derive a smaller Markdown handoff from an existing bundle.
+- [Demo runbook](docs/promo/demo-runbook.md) gives a promotion-safe sequence for reviewer handoff, redaction, and summary export clips.
 - [Video brief](docs/promo/video-brief.md) outlines a grounded walkthrough for promotion or screencast prep.
 
 ## Non-goals
