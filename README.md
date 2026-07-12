@@ -111,6 +111,8 @@ This fits well beside tools like `branchbrief`, `prpack`, and local review bundl
 - `bash demo/pr-comment-export-demo.sh` verifies the generated PR comment snippet from the reviewer handoff fixture.
 - [Release Evidence Bundle](docs/tutorials/release-evidence-bundle.md) packages a release handoff note and verification log into review outputs.
 - `bash demo/release-evidence-bundle.sh` verifies the release evidence fixture and generated PR comment.
+- [CI Readiness Bundle](docs/tutorials/ci-readiness-bundle.md) packages a CI-change handoff note and verification log into reviewer-ready outputs.
+- `bash demo/ci-readiness-bundle.sh` verifies the generated CI readiness bundle and PR comment.
 - [Video brief](docs/promo/video-brief.md) outlines a grounded walkthrough for promotion or screencast prep.
 
 ## Non-goals
