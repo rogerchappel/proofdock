@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "summary": {
+    "title": "CI readiness proof bundle",
+    "overview": "Packages a CI change handoff note, local verification output, and a PR-comment summary for reviewer use."
+  },
+  "artifacts": [
+    { "path": "notes/handoff.md", "title": "CI readiness handoff", "type": "note" },
+    { "path": "artifacts/check.log", "title": "Verification log", "type": "log" }
+  ],
+  "commands": [
+    { "id": "git-status", "title": "Git status", "command": ["git", "status", "--short"] },
+    { "id": "package-name", "title": "Package metadata present", "command": ["node", "-e", "const p=require('../../package.json'); console.log(p.name)"] }
+  ],
+  "reviewer": {
+    "risks": ["Fixture log only; replace it with fresh CI command output before using this for a real PR."],
+    "nextSteps": ["Attach pr-comment.md to the PR and keep proof.json with the release evidence."]
+  },
+  "redact": true
+}
