@@ -81,12 +81,23 @@ async function collectArtifacts(config: ProofdockConfig, repoRoot: string, bundl
     const bundledPath = path.join('artifacts', relativeSourcePath).replaceAll(path.sep, '/');
     const outputPath = path.join(bundleArtifactDir, relativeSourcePath);
     await ensureDir(path.dirname(outputPath));
-    await fs.copyFile(sourcePath, outputPath);
 
     const mediaType = isTextFile(sourcePath) ? 'text' : 'binary';
-    const preview = mediaType === 'text'
-      ? (redact ? redactText(await fs.readFile(sourcePath, 'utf8')) : await fs.readFile(sourcePath, 'utf8')).slice(0, 2000)
-      : undefined;
+    let preview: string | undefined;
+
+    if (mediaType === 'text') {
+      const source = await fs.readFile(sourcePath, 'utf8');
+      const bundled = redact ? redactText(source) : source;
+      preview = bundled.slice(0, 2000);
+
+      if (redact) {
+        await fs.writeFile(outputPath, bundled);
+      } else {
+        await fs.copyFile(sourcePath, outputPath);
+      }
+    } else {
+      await fs.copyFile(sourcePath, outputPath);
+    }
 
     deduped.set(relativeSourcePath, {
       sourcePath,

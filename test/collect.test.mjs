@@ -7,6 +7,7 @@ import { createFixtureRepo } from './helpers.mjs';
 
 test('collectProof creates JSON, markdown, html, and redacted previews', async () => {
   const repoRoot = await createFixtureRepo();
+  const secret = 'ghp_abcdefghijklmnopqrstuvwxyz123456';
   const bundle = await collectProof({
     configPath: path.join(repoRoot, 'proofdock.config.json'),
   });
@@ -19,12 +20,19 @@ test('collectProof creates JSON, markdown, html, and redacted previews', async (
   assert.match(bundle.checks[1].stdout, /\[REDACTED\]/);
 
   const markdown = await fs.readFile(path.join(repoRoot, 'proofdock', 'summary.md'), 'utf8');
-  const json = JSON.parse(await fs.readFile(path.join(repoRoot, 'proofdock', 'proof.json'), 'utf8'));
+  const jsonText = await fs.readFile(path.join(repoRoot, 'proofdock', 'proof.json'), 'utf8');
+  const json = JSON.parse(jsonText);
   const html = await fs.readFile(path.join(repoRoot, 'proofdock', 'index.html'), 'utf8');
+  const bundledHandoff = await fs.readFile(path.join(repoRoot, 'proofdock', 'artifacts', 'notes', 'handoff.md'), 'utf8');
 
   assert.match(markdown, /Fixture proof bundle/);
   assert.equal(json.summary.title, 'Fixture proof bundle');
   assert.match(html, /Markdown Summary/);
+  assert.match(bundledHandoff, /\[REDACTED\]/);
+
+  for (const output of [bundledHandoff, handoff?.preview ?? '', jsonText, markdown, html]) {
+    assert.equal(output.includes(secret), false);
+  }
 });
 
 test('collectProof rejects missing artifacts', async () => {
