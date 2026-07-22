@@ -7,3 +7,21 @@ test('redacts common secret patterns', () => {
   assert.equal(result.includes('[REDACTED]'), true);
   assert.equal(result.includes('abcdefghijklmnopqrstuvwxyz'), false);
 });
+
+test('removes values assigned to generic secret fields', () => {
+  const values = ['token-value', 'secret-value', 'password-value'];
+  const result = redactText(`token=${values[0]} secret: ${values[1]} password = ${values[2]}`);
+
+  assert.equal(result, 'token=[REDACTED] secret: [REDACTED] password = [REDACTED]');
+  for (const value of values) {
+    assert.equal(result.includes(value), false);
+  }
+});
+
+test('removes Authorization Bearer values', () => {
+  const secret = 'bearer-secret-value';
+  const result = redactText(`Authorization: Bearer ${secret}`);
+
+  assert.equal(result, 'Authorization: Bearer [REDACTED]');
+  assert.equal(result.includes(secret), false);
+});
