@@ -157,4 +157,20 @@ npm run package:smoke
 npm run release:check
 ```
 
-The package smoke uses `npm pack --dry-run` so the published file list can be reviewed without publishing.
+The package smoke and release check use `npm pack --dry-run`, so pull requests
+validate the published file list without publishing. The tag workflow is the
+only automated publication path:
+
+1. Set `package.json` to the intended version and merge the fully verified
+   change.
+2. Push the matching tag (for example, version `0.2.0` requires tag `v0.2.0`).
+3. The workflow validates the exact tag/version pair, builds and tests the
+   package, creates the tarball, publishes it to npm with provenance, and then
+   creates the GitHub release with that tarball.
+
+Configure npm trusted publishing for the `release.yml` workflow before tagging.
+No long-lived npm token is required. If npm publication fails, no GitHub release
+is created; fix the trusted-publisher or package configuration and rerun the
+failed job. If npm succeeds but GitHub release creation fails, do not publish
+again: create the GitHub release from the workflow tarball, or rerun only after
+confirming the package version already exists on npm.
