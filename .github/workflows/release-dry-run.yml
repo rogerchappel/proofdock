@@ -23,6 +23,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run release:config
       - run: npm test
       - run: npm run smoke --if-present
       - run: npm pack --dry-run
