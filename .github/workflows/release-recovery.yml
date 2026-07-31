@@ -69,5 +69,5 @@ jobs:
           if grep -Fxq "$RECOVERY_TAG" <<<"$release_tags"; then
             echo "GitHub release already exists; skipping release creation: $RECOVERY_TAG"
           else
-            gh release create "$RECOVERY_TAG" --generate-notes *.tgz
+            gh release create "$RECOVERY_TAG" --generate-notes ./*.tgz
           fi
