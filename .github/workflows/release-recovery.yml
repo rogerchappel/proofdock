@@ -1,0 +1,73 @@
+name: Release recovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to validate and recover (for example, v0.1.0)
+        required: true
+        type: string
+      confirm_recovery:
+        description: Confirm this is recovery of an existing immutable tag
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  RECOVERY_TAG: ${{ inputs.tag }}
+
+jobs:
+  recover:
+    if: inputs.confirm_recovery
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out recovery tooling
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Preserve recovery validator
+        run: cp scripts/release-recovery-check.mjs "$RUNNER_TEMP/release-recovery-check.mjs"
+      - name: Check out requested tag
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: refs/tags/${{ inputs.tag }}
+      - name: Validate requested tag, version, and checkout
+        run: node "$RUNNER_TEMP/release-recovery-check.mjs" "$RECOVERY_TAG"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - name: Verify tagged package
+        run: npm run release:check
+      - name: Build publication tarball
+        run: npm pack
+      - name: Publish package only when absent
+        run: |
+          package_spec=$(node -p "const p=require('./package.json'); p.name + '@' + p.version")
+          if npm view "$package_spec" version >"$RUNNER_TEMP/npm-view.out" 2>"$RUNNER_TEMP/npm-view.err"; then
+            echo "Package already exists on npm; skipping publication: $package_spec"
+          elif grep -q 'E404' "$RUNNER_TEMP/npm-view.err"; then
+            npm publish --provenance --access public
+          else
+            cat "$RUNNER_TEMP/npm-view.err" >&2
+            echo "npm lookup failed without E404; refusing to publish" >&2
+            exit 1
+          fi
+      - name: Create GitHub release only when absent
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release_tags=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases" --jq '.[].tag_name')
+          if grep -Fxq "$RECOVERY_TAG" <<<"$release_tags"; then
+            echo "GitHub release already exists; skipping release creation: $RECOVERY_TAG"
+          else
+            gh release create "$RECOVERY_TAG" --generate-notes *.tgz
+          fi
