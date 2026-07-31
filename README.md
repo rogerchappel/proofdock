@@ -174,3 +174,26 @@ is created; fix the trusted-publisher or package configuration and rerun the
 failed job. If npm succeeds but GitHub release creation fails, do not publish
 again: create the GitHub release from the workflow tarball, or rerun only after
 confirming the package version already exists on npm.
+
+### Recovering an existing release tag
+
+Use the **Release recovery** workflow only when the matching immutable tag
+already exists but the ordinary tag workflow did not finish. In GitHub Actions,
+choose **Release recovery**, select **Run workflow**, enter the exact existing
+tag (for example, `v0.1.0`), and enable **Confirm this is recovery**.
+
+The recovery job checks out that tag, verifies that `HEAD`, the requested tag,
+and `package.json` version agree, and runs the tagged revision's
+`npm run release:check` before packing anything. It preserves trusted-publishing
+provenance and public access. It queries npm before publishing and queries
+GitHub before creating a release, so rerunning after either partial success does
+not attempt to publish the same package version or create the same release
+again.
+
+If validation or the tagged checks fail, fix the source on a new version and
+tag; do not move or replace the existing tag. If npm publication fails, correct
+the trusted-publisher or package configuration and rerun recovery. If npm
+publication succeeds but release creation fails, rerun recovery: the npm step
+will be skipped and only the missing GitHub release will be created. If the
+GitHub release already exists but npm is missing, recovery publishes the package
+and leaves the existing release unchanged.
