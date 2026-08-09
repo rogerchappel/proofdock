@@ -12,25 +12,53 @@ interface ParsedArgs {
   positionals: string[];
 }
 
+const usageHint = "Run 'proofdock --help' for usage.";
+const commandOptions: Record<string, ReadonlyMap<string, 'value' | 'boolean'>> = {
+  init: new Map([['config', 'value'], ['force', 'boolean']]),
+  collect: new Map([['config', 'value'], ['out', 'value']]),
+  render: new Map([['input', 'value'], ['out', 'value']]),
+  summary: new Map([['input', 'value'], ['format', 'value']]),
+};
+
+function usageError(code: string, message: string): ProofdockError {
+  return new ProofdockError(code, `${message} ${usageHint}`);
+}
+
 function parseArgs(argv: string[]): ParsedArgs {
   const [command, ...rest] = argv;
   const flags = new Map<string, string | boolean>();
   const positionals: string[] = [];
+  const options = commandOptions[command];
+
+  if (!options) {
+    return { command, flags, positionals: rest };
+  }
 
   for (let index = 0; index < rest.length; index += 1) {
     const value = rest[index];
     if (value.startsWith('--')) {
       const key = value.slice(2);
-      const next = rest[index + 1];
-      if (next && !next.startsWith('--')) {
-        flags.set(key, next);
-        index += 1;
-      } else {
-        flags.set(key, true);
+      const optionKind = options.get(key);
+      if (!optionKind) {
+        throw usageError('UNKNOWN_OPTION', `Unknown option for ${command}: ${value}.`);
       }
+      if (optionKind === 'boolean') {
+        flags.set(key, true);
+        continue;
+      }
+      const next = rest[index + 1];
+      if (!next || next.startsWith('--')) {
+        throw usageError('MISSING_OPTION_VALUE', `${value} requires a value.`);
+      }
+      flags.set(key, next);
+      index += 1;
     } else {
       positionals.push(value);
     }
+  }
+
+  if (positionals.length > 0) {
+    throw usageError('UNEXPECTED_ARGUMENT', `Unexpected argument for ${command}: ${positionals[0]}.`);
   }
 
   return { command, flags, positionals };
@@ -81,6 +109,9 @@ async function commandRender(flags: Map<string, string | boolean>): Promise<void
 async function commandSummary(flags: Map<string, string | boolean>): Promise<void> {
   const input = path.resolve(String(flags.get('input') ?? 'proofdock/proof.json'));
   const format = String(flags.get('format') ?? 'markdown');
+  if (format !== 'markdown' && format !== 'json') {
+    throw usageError('INVALID_OPTION_VALUE', `Unsupported --format value: ${format}. Expected markdown or json.`);
+  }
   const bundle = JSON.parse(await fs.readFile(input, 'utf8'));
 
   if (format === 'json') {
@@ -112,7 +143,7 @@ async function main(): Promise<void> {
     case 'collect': {
       const configPath = parsed.flags.get('config');
       if (typeof configPath !== 'string') {
-        throw new ProofdockError('MISSING_ARG', 'collect requires --config <path>.');
+        throw usageError('MISSING_ARG', 'collect requires --config <path>.');
       }
       const bundle = await collectProof({
         configPath,
@@ -128,7 +159,7 @@ async function main(): Promise<void> {
       await commandSummary(parsed.flags);
       return;
     default:
-      throw new ProofdockError('UNKNOWN_COMMAND', `Unknown command: ${parsed.command}`);
+      throw usageError('UNKNOWN_COMMAND', `Unknown command: ${parsed.command}.`);
   }
 }
 
