@@ -76,6 +76,11 @@ proofdock render --input proofdock/proof.json [--out proofdock]
 proofdock summary --input proofdock/proof.json [--format markdown|json]
 ```
 
+Options are command-specific. Values are required after `--config`, `--out`,
+`--input`, and `--format`; `--force` is the only valueless command option.
+Unknown options, positional arguments, and summary formats other than `markdown`
+or `json` are rejected with a usage error.
+
 ## Safety model
 
 - Local-first only; no network calls in the core flow
