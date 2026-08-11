@@ -22,6 +22,15 @@ node dist/cli.js collect --config proofdock.config.json
 open proofdock/index.html
 ```
 
+Config fields are validated before collection. `summary.title` and
+`summary.overview` are strings; `repo.root` is an optional string; and
+`redact` is an optional boolean. Each artifact requires a non-empty `path`,
+each glob requires a non-empty `pattern`, and each command requires a
+non-empty `id` plus a non-empty `command` array of non-empty strings. Optional
+titles, `titlePrefix`, and `cwd` are strings, `allowFailure` is a boolean, and
+artifact/glob `type` is one of `note`, `log`, `screenshot`, or `file`.
+`reviewer.risks` and `reviewer.nextSteps` are arrays of strings when provided.
+
 Generated bundle contents:
 
 - `proofdock/proof.json`
