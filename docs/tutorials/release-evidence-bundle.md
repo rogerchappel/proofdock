@@ -12,9 +12,12 @@ bash demo/release-evidence-bundle.sh
 The demo builds the CLI, collects `examples/release-evidence/proofdock.config.json`,
 and verifies these generated files:
 
-- `tmp/release-evidence-bundle/proof.json`
-- `tmp/release-evidence-bundle/summary.md`
-- `tmp/release-evidence-bundle/pr-comment.md`
+- `${TMPDIR:-/tmp}/proofdock-release-evidence-bundle/proof.json`
+- `${TMPDIR:-/tmp}/proofdock-release-evidence-bundle/summary.md`
+- `${TMPDIR:-/tmp}/proofdock-release-evidence-bundle/pr-comment.md`
+
+Set `OUT_DIR` to write the bundle somewhere else. The default stays outside the
+checkout so collecting Git status does not add the bundle to its own evidence.
 
 ## What to replace in a real release
 
