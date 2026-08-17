@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 EXAMPLE_DIR="$ROOT_DIR/examples/release-evidence"
-OUT_DIR="${OUT_DIR:-$ROOT_DIR/tmp/release-evidence-bundle}"
+OUT_DIR="${OUT_DIR:-${TMPDIR:-/tmp}/proofdock-release-evidence-bundle}"
 
 cd "$ROOT_DIR"
 rm -rf "$OUT_DIR"
