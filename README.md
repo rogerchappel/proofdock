@@ -90,6 +90,11 @@ Options are command-specific. Values are required after `--config`, `--out`,
 Unknown options, positional arguments, and summary formats other than `markdown`
 or `json` are rejected with a usage error.
 
+Collection excludes the resolved output directory from glob discovery, including
+custom `--out` directories inside the repository. Repeating `collect` therefore
+rebuilds the same artifact set instead of collecting files from an earlier proof
+bundle. Explicit artifacts elsewhere in the repository remain included.
+
 ## Safety model
 
 - Local-first only; no network calls in the core flow
