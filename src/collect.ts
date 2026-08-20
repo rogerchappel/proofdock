@@ -50,13 +50,16 @@ async function runCommand(command: string[], cwd: string, redact: boolean): Prom
   }
 }
 
-async function collectArtifacts(config: ProofdockConfig, repoRoot: string, bundleArtifactDir: string, redact: boolean): Promise<ProofArtifact[]> {
+async function collectArtifacts(config: ProofdockConfig, repoRoot: string, outDir: string, bundleArtifactDir: string, redact: boolean): Promise<ProofArtifact[]> {
   const declared = [...(config.artifacts ?? [])];
   const files = await walk(repoRoot);
+  const relativeOutDir = path.relative(repoRoot, outDir);
+  const outputIsInsideRepo = relativeOutDir === '' || (!relativeOutDir.startsWith('..') && !path.isAbsolute(relativeOutDir));
 
   for (const globInput of config.globs ?? []) {
     const matcher = globToRegExp(globInput.pattern);
     const matches = files
+      .filter((filePath) => !outputIsInsideRepo || (filePath !== outDir && !filePath.startsWith(`${outDir}${path.sep}`)))
       .map((filePath) => path.relative(repoRoot, filePath).replaceAll(path.sep, '/'))
       .filter((relativePath) => matcher.test(relativePath));
 
@@ -123,7 +126,7 @@ export async function collectProof(options: CollectOptions): Promise<ProofBundle
 
   await ensureDir(artifactRoot);
   const git = await collectGitInfo(repoRoot);
-  const artifacts = await collectArtifacts(config, repoRoot, artifactRoot, redact);
+  const artifacts = await collectArtifacts(config, repoRoot, outDir, artifactRoot, redact);
 
   const checks: ProofCheck[] = [];
   for (const command of config.commands ?? []) {
