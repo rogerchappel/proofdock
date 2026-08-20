@@ -47,3 +47,28 @@ test('collectProof rejects missing artifacts', async () => {
     /Referenced artifact does not exist/
   );
 });
+
+test('collectProof excludes default and custom output directories from repeated glob collection', async () => {
+  for (const outputName of ['proofdock', 'custom-proof']) {
+    const repoRoot = await createFixtureRepo();
+    const configPath = path.join(repoRoot, 'proofdock.config.json');
+    const config = JSON.parse(await fs.readFile(configPath, 'utf8'));
+    config.globs = [{ pattern: '**/*.md', type: 'note' }];
+    await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`);
+
+    const options = {
+      configPath,
+      ...(outputName === 'proofdock' ? {} : { outDir: outputName }),
+    };
+    const first = await collectProof(options);
+    const second = await collectProof(options);
+    const artifactPaths = (bundle) => bundle.artifacts.map((artifact) => artifact.relativeSourcePath);
+
+    assert.deepEqual(artifactPaths(second), artifactPaths(first));
+    assert.deepEqual(artifactPaths(second), [
+      'artifacts/test.log',
+      'notes/handoff.md',
+    ]);
+    assert.equal(artifactPaths(second).some((artifactPath) => artifactPath.startsWith(`${outputName}/`)), false);
+  }
+});
