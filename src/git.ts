@@ -14,7 +14,7 @@ export async function collectGitInfo(repoRoot: string) {
   const branch = await git(['rev-parse', '--abbrev-ref', 'HEAD'], repoRoot);
   const head = await git(['rev-parse', 'HEAD'], repoRoot);
   const log = await git(['log', '--max-count=5', "--pretty=format:%H%x09%an%x09%s"], repoRoot);
-  const diff = await git(['diff', '--name-only', 'HEAD~1..HEAD'], repoRoot).catch(() => '');
+  const diff = await git(['diff-tree', '--root', '--no-commit-id', '--name-only', '-r', 'HEAD'], repoRoot);
   const status = await git(['status', '--short'], repoRoot);
 
   return {
