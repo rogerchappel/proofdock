@@ -50,3 +50,15 @@ export async function createFixtureRepo() {
   await fs.writeFile(path.join(root, 'proofdock.config.json'), `${JSON.stringify(config, null, 2)}\n`);
   return root;
 }
+
+export async function createRootCommitRepo() {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'proofdock-root-'));
+  await fs.writeFile(path.join(root, 'evidence.txt'), 'root commit evidence\n');
+  await execFileAsync('git', ['init'], { cwd: root });
+  await execFileAsync('git', ['config', 'user.name', 'Proof Dock'], { cwd: root });
+  await execFileAsync('git', ['config', 'user.email', 'proof@example.com'], { cwd: root });
+  await execFileAsync('git', ['add', '.'], { cwd: root });
+  await execFileAsync('git', ['commit', '-m', 'initial evidence'], { cwd: root });
+
+  return root;
+}

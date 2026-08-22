@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { collectProof } from '../dist/index.js';
-import { createFixtureRepo } from './helpers.mjs';
+import { createFixtureRepo, createRootCommitRepo } from './helpers.mjs';
 
 test('collectProof creates JSON, markdown, html, and redacted previews', async () => {
   const repoRoot = await createFixtureRepo();
@@ -46,6 +46,28 @@ test('collectProof rejects missing artifacts', async () => {
     () => collectProof({ configPath }),
     /Referenced artifact does not exist/
   );
+});
+
+test('collectProof reports tracked files for a root commit', async () => {
+  const repoRoot = await createRootCommitRepo();
+  const configPath = path.join(repoRoot, 'proofdock.config.json');
+  await fs.writeFile(configPath, `${JSON.stringify({
+    version: 1,
+    summary: {
+      title: 'Root commit proof',
+      overview: 'Collect evidence from the first commit.',
+    },
+    artifacts: [],
+    commands: [],
+    reviewer: { risks: [], nextSteps: [] },
+    redact: true,
+  }, null, 2)}\n`);
+
+  const bundle = await collectProof({ configPath });
+  const markdown = await fs.readFile(path.join(repoRoot, 'proofdock', 'summary.md'), 'utf8');
+
+  assert.deepEqual(bundle.git.changedFiles, ['evidence.txt']);
+  assert.match(markdown, /## Changed Files\n\n- `evidence\.txt`/);
 });
 
 test('collectProof excludes default and custom output directories from repeated glob collection', async () => {
