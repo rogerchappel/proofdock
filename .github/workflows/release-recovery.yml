@@ -47,6 +47,8 @@ jobs:
       - run: npm ci
       - name: Verify tagged package
         run: npm run release:check
+      - name: Report existing distribution state
+        run: npm run release:availability
       - name: Build publication tarball
         run: npm pack
       - name: Publish package only when absent

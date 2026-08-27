@@ -29,6 +29,8 @@
     "smoke": "npm run build && node scripts/smoke.mjs",
     "package:smoke": "npm run build && node scripts/package-smoke.mjs",
     "release:config": "node scripts/release-config-check.mjs",
+    "release:availability": "node scripts/release-availability.mjs",
+    "release:availability:test": "node --test test/release-availability.test.mjs",
     "release:recovery:test": "node --test test/release-recovery.test.mjs",
     "release:check": "npm run release:config && npm run check && npm test && npm run smoke && npm run package:smoke && npm pack --dry-run"
   },
