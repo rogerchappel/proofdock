@@ -12,6 +12,9 @@ proofdock assembles a local proof-of-work bundle for agent or developer changes.
 
 ## Quickstart
 
+proofdock is not currently available from the npm registry. For checkout-based
+development, clone this repository and run:
+
 ```sh
 npm install
 npm run build
@@ -21,6 +24,11 @@ node dist/cli.js init
 node dist/cli.js collect --config proofdock.config.json
 open proofdock/index.html
 ```
+
+The published `v0.1.0` GitHub release also includes the verified source package
+[`proofdock-0.1.0.tgz`](https://github.com/rogerchappel/proofdock/releases/download/v0.1.0/proofdock-0.1.0.tgz).
+Download and inspect that artifact when you need the released snapshot; do not
+use `npm install proofdock` until the package becomes available on npm.
 
 Config fields are validated before collection. `summary.title` and
 `summary.overview` are strings; `repo.root` is an optional string; and
@@ -174,11 +182,14 @@ npm run build
 npm run smoke
 npm run package:smoke
 npm run release:check
+npm run release:availability
 ```
 
 The package smoke and release check use `npm pack --dry-run`, so pull requests
-validate the published file list without publishing. The tag workflow is the
-only automated publication path:
+validate the published file list without publishing. `release:availability`
+performs read-only GitHub and npm lookups and reports each distribution channel
+independently; it never creates a release or publishes a package. The tag
+workflow is the only automated publication path:
 
 1. Set `package.json` to the intended version and merge the fully verified
    change.
@@ -203,7 +214,9 @@ tag (for example, `v0.1.0`), and enable **Confirm this is recovery**.
 
 The recovery job checks out that tag, verifies that `HEAD`, the requested tag,
 and `package.json` version agree, and runs the tagged revision's
-`npm run release:check` before packing anything. It preserves trusted-publishing
+`npm run release:check` before packing anything. It also runs the non-publishing
+`npm run release:availability` check so both distribution states are visible
+before recovery proceeds. It preserves trusted-publishing
 provenance and public access. It queries npm before publishing and queries
 GitHub before creating a release, so rerunning after either partial success does
 not attempt to publish the same package version or create the same release
