@@ -214,8 +214,8 @@ tag (for example, `v0.1.0`), and enable **Confirm this is recovery**.
 
 The recovery job checks out that tag, verifies that `HEAD`, the requested tag,
 and `package.json` version agree, and runs the tagged revision's
-`npm run release:check` before packing anything. It also runs the non-publishing
-`npm run release:availability` check so both distribution states are visible
+`npm run release:check` before packing anything. It also runs the preserved,
+non-publishing availability check so both distribution states are visible
 before recovery proceeds. It preserves trusted-publishing
 provenance and public access. It queries npm before publishing and queries
 GitHub before creating a release, so rerunning after either partial success does
