@@ -31,7 +31,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Preserve recovery validator
-        run: cp scripts/release-recovery-check.mjs "$RUNNER_TEMP/release-recovery-check.mjs"
+        run: |
+          cp scripts/release-recovery-check.mjs "$RUNNER_TEMP/release-recovery-check.mjs"
+          cp scripts/release-availability.mjs "$RUNNER_TEMP/release-availability.mjs"
       - name: Check out requested tag
         uses: actions/checkout@v5
         with:
@@ -48,7 +50,7 @@ jobs:
       - name: Verify tagged package
         run: npm run release:check
       - name: Report existing distribution state
-        run: npm run release:availability
+        run: node "$RUNNER_TEMP/release-availability.mjs"
       - name: Build publication tarball
         run: npm pack
       - name: Publish package only when absent

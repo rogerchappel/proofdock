@@ -32,7 +32,7 @@ export async function checkReleaseAvailability({
 }
 
 async function main() {
-  const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+  const pkg = JSON.parse(await readFile('package.json', 'utf8'));
   const repository = process.env.GITHUB_REPOSITORY || 'rogerchappel/proofdock';
   const result = await checkReleaseAvailability({
     githubApiUrl: process.env.GITHUB_API_URL,
