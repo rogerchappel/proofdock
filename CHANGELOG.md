@@ -7,6 +7,8 @@ format and uses semantic versioning when versioned releases are published.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-04
+
 ### Added
 
 - Initial project setup.
@@ -14,8 +16,6 @@ format and uses semantic versioning when versioned releases are published.
 ## Release Links
 
 - Unreleased:
-  `https://github.com/rogerchappel/proofdock/compare/...HEAD`
-- Latest release:
-  `https://github.com/rogerchappel/proofdock/releases/latest`
-
-Replace placeholder links once the first release tag exists.
+  `https://github.com/rogerchappel/proofdock/compare/v0.1.0...HEAD`
+- v0.1.0:
+  `https://github.com/rogerchappel/proofdock/releases/tag/v0.1.0`
