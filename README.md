@@ -93,6 +93,12 @@ proofdock render --input proofdock/proof.json [--out proofdock]
 proofdock summary --input proofdock/proof.json [--format markdown|json]
 ```
 
+`render` and both `summary` formats validate the complete `proof.json` structure
+before producing output. Malformed JSON or a missing/wrongly typed nested field
+exits with code 1 and a stable `INVALID_PROOF_BUNDLE` diagnostic naming the
+invalid input or field. A failed `render` does not create its requested output
+directory or write partial files.
+
 Options are command-specific. Values are required after `--config`, `--out`,
 `--input`, and `--format`; `--force` is the only valueless command option.
 Unknown options, positional arguments, and summary formats other than `markdown`
