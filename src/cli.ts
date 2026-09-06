@@ -4,6 +4,7 @@ import path from 'node:path';
 import { collectProof } from './collect.js';
 import { defaultConfig } from './config.js';
 import { ProofdockError } from './errors.js';
+import { parseProofBundle } from './proof-bundle.js';
 import { renderHtml, renderMarkdown, renderPrComment } from './render.js';
 
 interface ParsedArgs {
@@ -98,7 +99,7 @@ async function commandInit(flags: Map<string, string | boolean>): Promise<void> 
 async function commandRender(flags: Map<string, string | boolean>): Promise<void> {
   const input = path.resolve(String(flags.get('input') ?? 'proofdock/proof.json'));
   const outDir = path.resolve(String(flags.get('out') ?? path.dirname(input)));
-  const bundle = JSON.parse(await fs.readFile(input, 'utf8'));
+  const bundle = parseProofBundle(await fs.readFile(input, 'utf8'), input);
   await fs.mkdir(outDir, { recursive: true });
   await fs.writeFile(path.join(outDir, 'summary.md'), renderMarkdown(bundle));
   await fs.writeFile(path.join(outDir, 'index.html'), renderHtml(bundle));
@@ -112,7 +113,7 @@ async function commandSummary(flags: Map<string, string | boolean>): Promise<voi
   if (format !== 'markdown' && format !== 'json') {
     throw usageError('INVALID_OPTION_VALUE', `Unsupported --format value: ${format}. Expected markdown or json.`);
   }
-  const bundle = JSON.parse(await fs.readFile(input, 'utf8'));
+  const bundle = parseProofBundle(await fs.readFile(input, 'utf8'), input);
 
   if (format === 'json') {
     process.stdout.write(`${JSON.stringify(bundle, null, 2)}\n`);
