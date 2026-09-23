@@ -150,3 +150,7 @@ npm run release:check
 ```
 
 The package smoke uses `npm pack --dry-run` so the published file list can be reviewed without publishing.
+
+
+<!-- Automated change by spark worker -->
+This change was automatically processed by oss-pipeline-worker-spark-a
