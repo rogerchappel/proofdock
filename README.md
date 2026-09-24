@@ -191,6 +191,7 @@ npm run release:check
 npm run release:availability
 ```
 
+<<<<<<< Updated upstream
 The package smoke and release check use `npm pack --dry-run`, so pull requests
 validate the published file list without publishing. `release:availability`
 performs read-only GitHub and npm lookups and reports each distribution channel
@@ -235,3 +236,6 @@ publication succeeds but release creation fails, rerun recovery: the npm step
 will be skipped and only the missing GitHub release will be created. If the
 GitHub release already exists but npm is missing, recovery publishes the package
 and leaves the existing release unchanged.
+=======
+The package smoke uses `npm pack --dry-run` so the published file list can be reviewed without publishing.
+>>>>>>> Stashed changes
