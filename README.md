@@ -238,4 +238,11 @@ GitHub release already exists but npm is missing, recovery publishes the package
 and leaves the existing release unchanged.
 =======
 The package smoke uses `npm pack --dry-run` so the published file list can be reviewed without publishing.
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+
+
+<!-- Automated change by spark worker -->
+This change was automatically processed by oss-pipeline-worker-spark-a
+>>>>>>> ec6ddfe8372750aba2db530b5162fe5568bc92b5
