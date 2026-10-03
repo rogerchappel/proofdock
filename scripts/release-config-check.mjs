@@ -2,25 +2,30 @@ import { readFile } from 'node:fs/promises';
 
 const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const workflow = await readFile(new URL('../.github/workflows/release.yml', import.meta.url), 'utf8');
+const releaseConfigText = await readFile(new URL('../releasebox.config.json', import.meta.url), 'utf8');
+const releasePolicy = JSON.parse(releaseConfigText).release;
 const tag = process.argv[2] ?? process.env.RELEASE_TAG;
 const expectedTag = `v${packageJson.version}`;
 
 const failures = [];
 
-if (!packageJson.publishConfig || packageJson.publishConfig.access !== 'public') {
-  failures.push('package.json publishConfig.access must be "public"');
+const publishesNpm = releasePolicy.publishNpm === true;
+const runsNpmPublish = /^\s*run:\s*npm publish(?:\s|$)/m.test(workflow);
+
+if (runsNpmPublish !== publishesNpm) {
+  failures.push(`release workflow npm publish step must ${publishesNpm ? 'be present' : 'be absent'} to match release.publishNpm`);
 }
 
-if (packageJson.publishConfig?.provenance !== true) {
-  failures.push('package.json publishConfig.provenance must be true');
+if (publishesNpm && (!packageJson.publishConfig || packageJson.publishConfig.access !== 'public')) {
+  failures.push('package.json publishConfig.access must be "public" when npm publishing is enabled');
 }
 
-if (!/^\s*id-token:\s*write\s*$/m.test(workflow)) {
-  failures.push('release workflow must grant id-token: write for npm trusted publishing');
+if (publishesNpm && packageJson.publishConfig?.provenance !== true) {
+  failures.push('package.json publishConfig.provenance must be true when npm publishing is enabled');
 }
 
-if (!/^\s*-\s+(?:name:\s*Publish package to npm[\s\S]*?\n\s+)?run:\s*npm publish(?:\s|$)/m.test(workflow)) {
-  failures.push('release workflow must run npm publish (npm pack alone does not publish)');
+if (publishesNpm !== /^\s*id-token:\s*write\s*$/m.test(workflow)) {
+  failures.push(`release workflow id-token: write permission must ${publishesNpm ? 'be present' : 'be absent'} to match npm publishing policy`);
 }
 
 if (!/^\s*-\s+name:\s*Create GitHub release\s*$/m.test(workflow)) {
