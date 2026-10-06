@@ -18,6 +18,12 @@ test('removes values assigned to generic secret fields', () => {
   }
 });
 
+test('removes values assigned to API key and access token fields', () => {
+  const result = redactText('api_key=key-one api-key: key-two access_token=token-one access-token: token-two ; keep=this');
+
+  assert.equal(result, 'api_key=[REDACTED] api-key: [REDACTED] access_token=[REDACTED] access-token: [REDACTED] ; keep=this');
+});
+
 test('removes Authorization Bearer values', () => {
   const secret = 'bearer-secret-value';
   const result = redactText(`Authorization: Bearer ${secret}`);

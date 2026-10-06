@@ -4,7 +4,7 @@ const REDACTION_PATTERNS: RegExp[] = [
   /sk-[A-Za-z0-9]{20,}/g,
   /AKIA[0-9A-Z]{16}/g,
   /-----BEGIN [A-Z ]+PRIVATE KEY-----[\s\S]*?-----END [A-Z ]+PRIVATE KEY-----/g,
-  /((?:token|secret|password)\s*[:=]\s*)[^\s]+/gi,
+  /((?:token|secret|password|api[_-]?key|access[_-]?token)\s*[:=]\s*)[^\s]+/gi,
   /(Authorization:\s*Bearer\s+)[^\s]+/gi,
 ];
 
